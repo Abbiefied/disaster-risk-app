@@ -11,6 +11,7 @@ import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 
+from config import *
 from utils import (
     predict_risk,
     build_next_year_input,
@@ -188,7 +189,7 @@ st.markdown("""
 #Load data
 @st.cache_data
 def load_data():
-    return pd.read_csv("country_year_features.csv")
+    return pd.read_csv(DATA_PATH)
 
 cy = load_data()
 

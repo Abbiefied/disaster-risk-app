@@ -6,28 +6,12 @@ All model artifacts are loaded once here and imported by app.py.
 import numpy as np
 import pandas as pd
 import joblib
+from config import *
 
 #Load artifacts once at import time
-model           = joblib.load("disaster_model.pkl")
-scaler          = joblib.load("scaler.pkl")
-feature_columns = joblib.load("feature_columns.pkl")
-
-#Columns scaled during training (must match training pipeline exactly)
-SCALE_COLS = [
-    "Start_Year",
-    "prev_year_count",
-    "log_prev_total_deaths",
-    "log_prev_total_affected",
-    "log_prev_total_damage",
-]
-
-#Raw impact columns present in country_year_features.csv that feed into lags
-RAW_IMPACT_COLS = {
-    "log_prev_total_deaths"   : "total_deaths",
-    "log_prev_total_affected" : "total_affected",
-    "log_prev_total_damage"   : "total_damage",
-}
-
+model           = joblib.load(MODEL_PATH)
+scaler          = joblib.load(SCALER_PATH)
+feature_columns = joblib.load(FEATURE_COLUMNS_PATH)
 
 def prepare_input(df: pd.DataFrame) -> pd.DataFrame:
     """
