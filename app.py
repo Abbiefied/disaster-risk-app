@@ -365,7 +365,7 @@ with tab2:
     if year_data.empty:
         st.warning("No data for selected year.")
     else:
-        # Vectorised: prepare all rows at once instead of looping
+      
         drop_cols  = ["Country", "High_Occurrence", "event_count",
                       "total_deaths", "total_affected", "total_damage"]
         input_bulk = year_data.drop(columns=drop_cols, errors="ignore")
@@ -392,7 +392,7 @@ with tab2:
                 ranking_df.style.background_gradient(
                     subset=["Risk Probability"], cmap="RdYlGn_r"
                 ).format({"Risk Probability": "{:.1%}"}),
-                use_container_width=True,    # FIX: original used width='stretch' (invalid)
+                width='stretch',    
                 height=500,
             )
 
@@ -419,8 +419,121 @@ with tab2:
                 xaxis=dict(range=[0, 1.1], gridcolor="rgba(255,255,255,0.06)"),
                 yaxis=dict(gridcolor="rgba(255,255,255,0.06)"),
             )
-            st.plotly_chart(fig, use_container_width=True)  # FIX: invalid kwarg removed
+            st.plotly_chart(fig, width='stretch')
 
+#Asia choropleth map
+        st.markdown("---")
+        st.markdown(
+            f'<p class="section-heading">Asia Risk Map - {selected_year}</p>',
+            unsafe_allow_html=True,
+        )
+        st.caption(
+            "Colour intensity represents the model's predicted risk probability "
+            "for each country. Countries in the dataset but with no data for the "
+            "selected year appear grey. Hover over any country for details."
+        )
+ 
+        # Merge ISO codes from cy into ranking_df so the map has location codes
+        iso_lookup = (
+            cy[["Country", "ISO"]]
+            .drop_duplicates("Country")
+            .set_index("Country")["ISO"]
+            .to_dict()
+        )
+        ranking_df["ISO"] = ranking_df["Country"].map(iso_lookup)
+ 
+        # Risk level order for the hover label
+        ranking_df["Risk %"] = (ranking_df["Risk Probability"] * 100).round(1)
+ 
+        fig_map = go.Figure(go.Choropleth(
+            locations      = ranking_df["ISO"],
+            z              = ranking_df["Risk Probability"],
+            text           = ranking_df["Country"],
+            customdata     = np.stack([
+                ranking_df["Risk %"],
+                ranking_df["Risk Level"],
+                ranking_df["Prediction"],
+            ], axis=-1),
+            hovertemplate  = (
+                "<b>%{text}</b><br>"
+                "Risk Probability : %{customdata[0]:.1f}%<br>"
+                "Risk Level       : %{customdata[1]}<br>"
+                "Prediction       : %{customdata[2]}<br>"
+                "<extra></extra>"
+            ),
+            colorscale     = [
+                [0.00, "#1a3a5c"],   # deep blue  — very low risk
+                [0.25, "#2e6da4"],   # mid blue   — low risk
+                [0.50, "#f1c40f"],   # amber      — moderate risk
+                [0.75, "#e67e22"],   # orange     — high risk
+                [1.00, "#c0392b"],   # deep red   — very high risk
+            ],
+            zmin           = 0,
+            zmax           = 1,
+            marker_line_color = "rgba(255,255,255,0.15)",
+            marker_line_width = 0.5,
+            colorbar = dict(
+                title      = dict(text="Risk Probability", font=dict(color="#c8d0e8")),
+                tickformat = ".0%",
+                tickfont   = dict(color="#c8d0e8"),
+                bgcolor    = "rgba(22,27,46,0.8)",
+                bordercolor= "rgba(255,255,255,0.1)",
+                borderwidth= 1,
+                thickness  = 16,
+                len        = 0.75,
+                tickvals   = [0, 0.25, 0.50, 0.75, 1.0],
+                ticktext   = ["0% Low", "25%", "50% Moderate", "75%", "100% High"],
+            ),
+        ))
+ 
+        fig_map.update_layout(
+            geo = dict(
+                scope           = "asia",
+                showframe       = False,
+                showcoastlines  = True,
+                coastlinecolor  = "rgba(255,255,255,0.12)",
+                showland        = True,
+                landcolor       = "#1a1f35",
+                showocean       = True,
+                oceancolor      = "#0f1117",
+                showlakes       = True,
+                lakecolor       = "#0f1117",
+                showcountries   = True,
+                countrycolor    = "rgba(255,255,255,0.08)",
+                bgcolor         = "#0f1117",
+                projection_type = "natural earth",
+            ),
+            paper_bgcolor = "#0f1117",
+            font_color    = "#c8d0e8",
+            title         = dict(
+                text      = f"Predicted Disaster Risk by Country — {selected_year}",
+                font      = dict(size=16, color="#c8d0e8"),
+                x         = 0.5,
+                xanchor   = "center",
+            ),
+            margin        = dict(l=0, r=0, t=50, b=0),
+            height        = 520,
+        )
+ 
+        st.plotly_chart(fig_map, width='stretch')
+ 
+        #Risk level legend 
+        legend_items = [
+            ("#1a3a5c", "#2e6da4", "Low (0–40%)"),
+            ("#f1c40f", "#f1c40f", "Moderate (40–55%)"),
+            ("#e67e22", "#e67e22", "High (55–75%)"),
+            ("#c0392b", "#c0392b", "Very High (75–100%)"),
+        ]
+        legend_html = '<div style="display:flex;gap:1.5rem;flex-wrap:wrap;margin-top:0.5rem">'
+        for bg, border, label in legend_items:
+            legend_html += (
+                f'<div style="display:flex;align-items:center;gap:0.5rem;'
+                f'font-size:0.82rem;color:#8892b0">'
+                f'<div style="width:14px;height:14px;border-radius:3px;'
+                f'background:{bg};border:1px solid {border}"></div>{label}</div>'
+            )
+        legend_html += "</div>"
+        st.markdown(legend_html, unsafe_allow_html=True)
 
 # -----------------------------------------------------------------------------
 # TAB 3 - TRENDS
@@ -454,7 +567,7 @@ with tab3:
         xaxis=dict(gridcolor="rgba(255,255,255,0.06)"),
         yaxis=dict(gridcolor="rgba(255,255,255,0.06)"),
     )
-    st.plotly_chart(fig_trend, use_container_width=True)
+    st.plotly_chart(fig_trend, width='stretch')
 
     #Country comparison
     st.markdown("---")
@@ -490,7 +603,7 @@ with tab3:
             yaxis=dict(gridcolor="rgba(255,255,255,0.06)"),
             legend=dict(bgcolor="rgba(0,0,0,0)"),
         )
-        st.plotly_chart(fig2, use_container_width=True)
+        st.plotly_chart(fig2, width='stretch')
 
     #Heatmap: country × year
     st.markdown("---")
@@ -519,7 +632,7 @@ with tab3:
         margin=dict(l=10, r=10, t=50, b=10),
         coloraxis_colorbar=dict(tickfont=dict(color="#c8d0e8")),
     )
-    st.plotly_chart(fig_heat, use_container_width=True)
+    st.plotly_chart(fig_heat, width='stretch')
 
 
 # -----------------------------------------------------------------------------
@@ -582,7 +695,7 @@ with tab4:
         xaxis=dict(gridcolor="rgba(255,255,255,0.06)", zeroline=False),
         yaxis=dict(gridcolor="rgba(255,255,255,0.06)", autorange="reversed"),
     )
-    st.plotly_chart(fig_imp, use_container_width=True)
+    st.plotly_chart(fig_imp, width='stretch')
 
     #Methodology notes
     st.markdown("---")
