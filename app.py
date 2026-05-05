@@ -1192,7 +1192,7 @@ with tab5:
     
     #Team members 
     team_members = [
-        ("Azeezat Kareem",             "SCA/APC3/DS/011", "https://linkedin.com/in/azeezat-kareem", "https://github.com/Abbiefied/disaster-risk-app"),
+        ("Azeezat Kareem",             "SCA/APC3/DS/011", "https://linkedin.com/in/azeezat-kareem-824697371/", "https://github.com//aazeezat915-gif"),
         ("Ganiyat Adekunle",           "SCA/APC3/DS/039", "https://linkedin.com/in/ganiyatadekunle/", "https://github.com/Abbiefied/"),
         ("Oluwatoyin Amodu",           "SCA/APC3/DS/048", "https://linkedin.com/in/oluwatoyin-amodu", "https://github.com/Abbiefied/disaster-risk-app"),
         ("Ifedigbo Ifeoma Christabel", "SCA/APC3/DS/195", "https://linkedin.com/in/ifedigbo-ifeoma-a52988264", "https://github.com/Abbiefied/disaster-risk-app"),
