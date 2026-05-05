@@ -317,6 +317,7 @@ section[data-testid="stSidebar"] h3 { color: #c8d0e8 !important; }
     transition: all 0.25s ease;
     position: relative;
     overflow: hidden;
+    margin-bottom: 1.6rem;
 }
 
 .team-card:hover {
