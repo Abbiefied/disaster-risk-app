@@ -10,6 +10,7 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
+import plotly.io as pio
 import textwrap
 
 from config import *
@@ -274,6 +275,88 @@ section[data-testid="stSidebar"] h3 { color: #c8d0e8 !important; }
 .driver-up   { color: #e17070; font-weight: 600; }
 .driver-down { color: #6ec98f; font-weight: 600; }
 
+/* TEAM CARD */
+.team-card {
+    background: linear-gradient(145deg, #161b2e, #12192e);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 16px;
+    padding: 1.6rem 1.4rem;
+    text-align: center;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.team-card:hover {
+    transform: translateY(-6px) scale(1.01);
+    border-color: rgba(91,127,245,0.35);
+    box-shadow: 0 12px 30px rgba(61, 90, 241, 0.15);
+}
+
+/* soft glow */
+.team-card::before {
+    content: "";
+    position: absolute;
+    top: -60px;
+    right: -60px;
+    width: 140px;
+    height: 140px;
+    background: radial-gradient(circle, rgba(91,127,245,0.18), transparent 70%);
+    border-radius: 50%;
+}
+
+/* avatar */
+.team-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #3d5af1, #5b7ff5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.4rem;
+    color: #ffffff;
+}
+
+/* name */
+.team-name {
+    font-size: 0.98rem;
+    font-weight: 600;
+    color: #e6ebff;
+    margin-bottom: 0.25rem;
+}
+
+/* role / id */
+.team-id {
+    font-size: 0.72rem;
+    color: #6c7aa5;
+    letter-spacing: 0.5px;
+    margin-bottom: 1rem;
+}
+
+/* linkedin button */
+.team-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #8aadff;
+    text-decoration: none;
+    background: rgba(91,127,245,0.12);
+    border: 1px solid rgba(91,127,245,0.3);
+    padding: 0.35rem 0.9rem;
+    border-radius: 20px;
+    transition: all 0.2s ease;
+}
+
+.team-link:hover {
+    background: rgba(91,127,245,0.25);
+    border-color: #5b7ff5;
+}
+
 /*Streamlit component overrides*/
 div[data-testid="stSelectbox"] label,
 div[data-testid="stMetricLabel"]   { color: #8892b0 !important; }
@@ -292,14 +375,14 @@ div[data-testid="stDataFrame"] { border-radius: 8px; overflow: hidden; }
 </style>
 """, unsafe_allow_html=True)
 
-# ── Load data ─────────────────────────────────────────────────────────────────
+#Load data 
 @st.cache_data
 def load_data():
     return pd.read_csv(DATA_PATH)
 
 cy = load_data()
 
-#Sidebar ───────────────────────────────────────────────────────────────────
+#Sidebar 
 with st.sidebar:
     st.markdown("""
     <div style="text-align:center;padding:1rem 0 1.5rem">
@@ -357,7 +440,7 @@ with st.sidebar:
         unsafe_allow_html=True
     )
 
-# ── Hero banner ───────────────────────────────────────────────────────────────
+#Hero banner 
 # Compute live headline stats for the hero
 most_active_country = cy.groupby("Country")["event_count"].sum().idxmax()
 most_active_year    = cy.groupby("Start_Year")["event_count"].sum().idxmax()
@@ -405,7 +488,7 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 
-# ── Tabs ──────────────────────────────────────────────────────────────────────
+#Tabs 
 tab1, tab2, tab3, tab4, tab5 = st.tabs([
     "🔮 Predict Risk",
     "🏆 Country Rankings",
@@ -415,9 +498,9 @@ tab1, tab2, tab3, tab4, tab5 = st.tabs([
 ])
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# ---------------------------------------------------
 # TAB 1 - PREDICTION
-# ═══════════════════════════════════════════════════════════════════════════════
+# ---------------------------------------------------
 with tab1:
 
     st.markdown('<p class="section-heading">Country Risk Prediction</p>',
@@ -443,10 +526,10 @@ with tab1:
 
     st.markdown("---")
 
-    # ── Side-by-side current / next year predictions ─────────────────────────
+    #Side-by-side current / next year predictions 
     col_curr, col_next = st.columns(2)
 
-    # ── Current year ──
+    #Current year 
     with col_curr:
         st.markdown('<div class="card">', unsafe_allow_html=True)
         st.markdown('<p class="card-title">Current Year</p>', unsafe_allow_html=True)
@@ -476,12 +559,7 @@ with tab1:
         st.progress(prob_curr)
         st.markdown('</div>', unsafe_allow_html=True)
 
-    # ── Next year ──
-    # BUG FIX: original code only updated Start_Year, leaving all lag features
-    # unchanged → model saw near-identical input → near-identical probability.
-    # build_next_year_input() correctly rolls the current year's actuals
-    # (event_count, total_deaths, total_affected, total_damage) into the lag
-    # columns before predicting, so the model receives genuinely updated input.
+    #Next year 
     with col_next:
         st.markdown('<div class="card">', unsafe_allow_html=True)
         st.markdown('<p class="card-title">Next Year Forecast</p>',
@@ -513,7 +591,7 @@ with tab1:
         st.progress(prob_next)
         st.markdown('</div>', unsafe_allow_html=True)
 
-    # ── Risk delta callout ────────────────────────────────────────────────────
+    #Risk delta callout 
     delta      = prob_next - prob_curr
     delta_icon = "📈" if delta > 0.02 else "📉" if delta < -0.02 else "➡️"
     delta_text = (
@@ -525,7 +603,7 @@ with tab1:
     )
     st.info(f"{delta_icon} {delta_text}")
 
-    # ── Risk drivers panel ────────────────────────────────────────────────────
+    #Risk drivers panel 
     st.markdown("---")
     st.markdown('<p class="section-heading">What is driving the risk?</p>',
                 unsafe_allow_html=True)
@@ -540,8 +618,6 @@ with tab1:
     for _, row in drivers.iterrows():
         is_up   = row["Contribution"] > 0
         colour  = "#e17070" if is_up else "#6ec98f"
-        # FIX: ↑ / ↓ Unicode chars are intercepted by Streamlit's Material Icons
-        # renderer and expanded to icon names. HTML triangle entities are safe.
         arrow   = "&#9650;" if is_up else "&#9660;"
         bar_pct = min(abs(row["Contribution"]) / drivers["Contribution"].abs().max(), 1.0)
         bar_w   = int(bar_pct * 180)
@@ -564,7 +640,7 @@ with tab1:
         </div>
         """, unsafe_allow_html=True)
 
-    # ── Country historical profile ─────────────────────────────────────────────
+    #Country historical profile 
     st.markdown("---")
     st.markdown(f'<p class="section-heading">Historical Profile - {country}</p>',
                 unsafe_allow_html=True)
@@ -614,9 +690,9 @@ with tab1:
     st.plotly_chart(fig_hist, width='stretch')
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# ---------------------------------------------------
 # TAB 2 - COUNTRY RANKINGS
-# ═══════════════════════════════════════════════════════════════════════════════
+# ---------------------------------------------------
 with tab2:
 
     st.markdown('<p class="section-heading">Country Risk Rankings</p>',
@@ -660,7 +736,7 @@ with tab2:
                 ranking_df.style.background_gradient(
                     subset=["Risk Probability"], cmap="RdYlGn_r"
                 ).format({"Risk Probability": "{:.1%}"}),
-                width='stretch',    # FIX: original used width='stretch' (invalid)
+                width='stretch',
                 height=500,
             )
 
@@ -677,19 +753,22 @@ with tab2:
                 textposition="outside",
             ))
             fig.update_layout(
-                title=f"Top 15 Countries by Risk Probability ({selected_year})",
+                title=dict(
+                    text=f"Top 15 Countries by Risk Probability ({selected_year})", 
+                    font=dict(color='#c8d0e8')
+                ),
                 xaxis_title="Risk Probability",
                 plot_bgcolor="#161b2e",
                 paper_bgcolor="#161b2e",
-                font_color="#c8d0e8",
-                height=520,
+                font_color="#c57424",
+                height=520, 
                 margin=dict(l=10, r=60, t=50, b=10),
                 xaxis=dict(range=[0, 1.1], gridcolor="rgba(255,255,255,0.06)"),
                 yaxis=dict(gridcolor="rgba(255,255,255,0.06)"),
             )
             st.plotly_chart(fig, width='stretch')
 
-        # ── Asia choropleth map ───────────────────────────────────────────────
+        #Asia choropleth map 
         st.markdown("---")
         st.markdown(
             f'<p class="section-heading">Asia Risk Map - {selected_year}</p>',
@@ -785,7 +864,7 @@ with tab2:
 
         st.plotly_chart(fig_map, width='stretch')
 
-        # ── Risk level legend ─────────────────────────────────────────────────
+        #Risk level legend 
         legend_items = [
             ("#1a3a5c", "#2e6da4", "Low (0–40%)"),
             ("#f1c40f", "#f1c40f", "Moderate (40–55%)"),
@@ -803,7 +882,7 @@ with tab2:
         legend_html += "</div>"
         st.markdown(legend_html, unsafe_allow_html=True)
 
-        # ── Download ranking data ─────────────────────────────────────────────
+        #Download ranking data 
         st.markdown("<br>", unsafe_allow_html=True)
         csv_data = ranking_df.drop(columns=["ISO", "Risk %"], errors="ignore")
         csv_data["Risk Probability"] = csv_data["Risk Probability"].round(4)
@@ -815,22 +894,22 @@ with tab2:
         )
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# ---------------------------------------------------
 # TAB 3 - TRENDS
-# ═══════════════════════════════════════════════════════════════════════════════
+# ---------------------------------------------------
 with tab3:
 
     st.markdown('<p class="section-heading">Temporal Trend Analysis</p>',
                 unsafe_allow_html=True)
 
-    # ── Overall Asia trend ────────────────────────────────────────────────────
+    #Overall Asia trend 
     yearly = cy.groupby("Start_Year")["event_count"].sum().reset_index()
 
     fig_trend = px.area(
         yearly,
         x="Start_Year",
         y="event_count",
-        title="Total Disaster Events Across Asia (2001–2024)",
+        title="Total Disaster Events Across Asia (2001–2024)", 
         labels={"Start_Year": "Year", "event_count": "Event Count"},
         color_discrete_sequence=["#5b7ff5"],
     )
@@ -839,6 +918,7 @@ with tab3:
         fillcolor="rgba(91,127,245,0.15)"
     )
     fig_trend.update_layout(
+        title_font=dict(color='#c8d0e8'),
         plot_bgcolor="#161b2e",
         paper_bgcolor="#161b2e",
         font_color="#c8d0e8",
@@ -849,7 +929,7 @@ with tab3:
     )
     st.plotly_chart(fig_trend, width='stretch')
 
-    # ── Country comparison ─────────────────────────────────────────────────────
+    #Country comparison 
     st.markdown("---")
     st.subheader("Country Comparison")
 
@@ -869,11 +949,12 @@ with tab3:
             x="Start_Year",
             y="event_count",
             color="Country",
-            title="Annual Disaster Count - Country Comparison",
+            title="Annual Disaster Count - Country Comparison", 
             labels={"Start_Year": "Year", "event_count": "Event Count"},
             markers=True,
         )
         fig2.update_layout(
+            title_font=dict(color='#c8d0e8'),
             plot_bgcolor="#161b2e",
             paper_bgcolor="#161b2e",
             font_color="#c8d0e8",
@@ -885,7 +966,7 @@ with tab3:
         )
         st.plotly_chart(fig2, width='stretch')
 
-    # ── Heatmap: country × year ───────────────────────────────────────────────
+    #Heatmap: country × year 
     st.markdown("---")
     st.subheader("Risk Heatmap - Top 15 Countries × Year")
 
@@ -905,6 +986,7 @@ with tab3:
         aspect="auto",
     )
     fig_heat.update_layout(
+        title_font=dict(color='#c8d0e8'),
         plot_bgcolor="#161b2e",
         paper_bgcolor="#161b2e",
         font_color="#c8d0e8",
@@ -915,15 +997,15 @@ with tab3:
     st.plotly_chart(fig_heat, width='stretch')
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# ---------------------------------------------------
 # TAB 4 - MODEL INSIGHTS
-# ═══════════════════════════════════════════════════════════════════════════════
+# ---------------------------------------------------
 with tab4:
 
     st.markdown('<p class="section-heading">Model Insights</p>',
                 unsafe_allow_html=True)
 
-    # ── Model card ────────────────────────────────────────────────────────────
+    #Model card 
     st.markdown("""
     <div class="card">
         <p class="card-title">Model Card</p>
@@ -942,7 +1024,7 @@ with tab4:
     </div>
     """, unsafe_allow_html=True)
 
-    # ── Feature importance chart ───────────────────────────────────────────────
+    #Feature importance chart 
     st.markdown("---")
     st.subheader("Feature Importance - Logistic Regression Coefficients")
     st.caption(
@@ -966,7 +1048,10 @@ with tab4:
     ))
     fig_imp.add_vline(x=0, line_color="rgba(255,255,255,0.2)", line_width=1)
     fig_imp.update_layout(
-        title="Top 20 Feature Coefficients (by absolute magnitude)",
+        title=dict(
+            text="Top 20 Feature Coefficients (by absolute magnitude)", 
+            font=dict(color='#c8d0e8')
+            ),
         plot_bgcolor="#161b2e",
         paper_bgcolor="#161b2e",
         font_color="#c8d0e8",
@@ -977,7 +1062,7 @@ with tab4:
     )
     st.plotly_chart(fig_imp, width='stretch')
 
-    # ── Methodology notes for judges ──────────────────────────────────────────
+    #Methodology notes for judges 
     st.markdown("---")
     st.subheader("Methodological Notes")
 
@@ -1025,9 +1110,9 @@ with tab4:
         both classes equally during training.
         """)
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# ---------------------------------------------------
 # TAB 5 - OUR TEAM
-# ═══════════════════════════════════════════════════════════════════════════════
+# ---------------------------------------------------
 with tab5:
  
     st.markdown('<p class="section-heading">Our Team</p>',
@@ -1038,7 +1123,7 @@ with tab5:
         unsafe_allow_html=True
     )
  
-    # LinkedIn SVG icon (inline, reused per card)
+    # LinkedIn SVG icon
     LI_SVG = (
         '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">'
         '<path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037'
@@ -1051,20 +1136,36 @@ with tab5:
         'C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729'
         'C24 .774 23.2 0 22.222 0h.003z"/></svg>'
     )
- 
-    # ── Team members ─────────────────────────────────────────────────────────
+
+    #Github SVG icon
+    GH_SVG = (
+    '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">'
+    '<path d="M12 .5C5.73.5.98 5.24.98 11.52c0 4.88 3.16 9.02 7.55 10.48'
+    ' .55.1.75-.24.75-.53 0-.26-.01-1.14-.02-2.07-3.07.67-3.72-1.48'
+    ' -3.72-1.48-.5-1.28-1.22-1.62-1.22-1.62-1-.68.08-.67.08-.67'
+    ' 1.1.08 1.68 1.14 1.68 1.14.98 1.68 2.57 1.2 3.2.92.1-.71.38-1.2'
+    ' .7-1.48-2.45-.28-5.02-1.22-5.02-5.43 0-1.2.43-2.18 1.13-2.95'
+    ' -.11-.28-.49-1.41.11-2.94 0 0 .92-.29 3.02 1.13a10.5 10.5 0 0 1'
+    ' 5.5 0c2.1-1.42 3.02-1.13 3.02-1.13.6 1.53.22 2.66.11 2.94'
+    ' .7.77 1.13 1.75 1.13 2.95 0 4.22-2.58 5.14-5.04 5.42'
+    ' .39.34.74 1.01.74 2.04 0 1.47-.01 2.65-.01 3.01 0 .29.2.64.76.53'
+    ' 4.38-1.46 7.54-5.6 7.54-10.48C23.02 5.24 18.27.5 12 .5z"/>'
+    '</svg>'
+    )
+    
+    #Team members 
     team_members = [
-        ("Azeezat Kareem",             "SCA/APC3/DS/011", "https://linkedin.com/in/azeezat-kareem"),
-        ("Ganiyat Adekunle",           "SCA/APC3/DS/039", "https://linkedin.com/in/ganiyatadekunle/"),
-        ("Oluwatoyin Amodu",           "SCA/APC3/DS/048", "https://linkedin.com/in/oluwatoyin-amodu"),
-        ("Ifedigbo Ifeoma Christabel", "SCA/APC3/DS/195", "https://linkedin.com/in/ifeoma-christabel-ifedigbo"),
-        ("Abigail Dahunsi",            "SCA/APC3/DS/078", "https://linkedin.com/in/abigail-dahunsi"),
-        ("Bunmi Apata",                "SCA/APC3/DS/081", "https://linkedin.com/in/bunmi-apata"),
-        ("Ogechi Obidile",             "SCA/APC3/DS/086", "https://linkedin.com/in/ogechi-obidile"),
-        ("Mistura Bakare",             "SCA/APC3/DS/139", "https://linkedin.com/in/mistura-bakare"),
-        ("Queen Abiche",               "SCA/APC3/DS/142", "https://linkedin.com/in/queen-abiche"),
-        ("Priscilla Akinwale",         "SCA/APC3/DS/186", "https://linkedin.com/in/priscilla-akinwale"),
-        ("Ability James",              "SCA/APC3/DS/060", "https://linkedin.com/in/ability-james"),
+        ("Azeezat Kareem",             "SCA/APC3/DS/011", "https://linkedin.com/in/azeezat-kareem", "https://github.com/Abbiefied/disaster-risk-app"),
+        ("Ganiyat Adekunle",           "SCA/APC3/DS/039", "https://linkedin.com/in/ganiyatadekunle/", "https://github.com/Abbiefied/"),
+        ("Oluwatoyin Amodu",           "SCA/APC3/DS/048", "https://linkedin.com/in/oluwatoyin-amodu", "https://github.com/Abbiefied/disaster-risk-app"),
+        ("Ifedigbo Ifeoma Christabel", "SCA/APC3/DS/195", "https://linkedin.com/in/ifeoma-christabel-ifedigbo", "https://github.com/Abbiefied/disaster-risk-app"),
+        ("Abigail Dahunsi",            "SCA/APC3/DS/078", "https://linkedin.com/in/abigail-dahunsi", "https://github.com/Abbiefied/disaster-risk-app"),
+        ("Bunmi Apata",                "SCA/APC3/DS/081", "https://linkedin.com/in/bunmi-apata", "https://github.com/Abbiefied/disaster-risk-app"),
+        ("Ogechi Obidile",             "SCA/APC3/DS/086", "https://linkedin.com/in/ogechi-obidile", "https://github.com/Abbiefied/disaster-risk-app"),
+        ("Mistura Bakare",             "SCA/APC3/DS/139", "https://linkedin.com/in/mistura-bakare", "https://github.com/Abbiefied/disaster-risk-app"),
+        ("Queen Abiche",               "SCA/APC3/DS/142", "https://linkedin.com/in/queen-abiche", "https://github.com/Abbiefied/disaster-risk-app"),
+        ("Priscilla Akinwale",         "SCA/APC3/DS/186", "https://linkedin.com/in/priscilla-akinwale", "https://github.com/Abbiefied/disaster-risk-app"),
+        ("Ability James",              "SCA/APC3/DS/060", "https://linkedin.com/in/ability-james", "https://github.com/Abbiefied/disaster-risk-app"),
     ]
  
     # Render 3 cards per row
@@ -1072,72 +1173,38 @@ with tab5:
     for row_start in range(0, len(team_members), cols_per_row):
         row_members = team_members[row_start : row_start + cols_per_row]
         cols = st.columns(cols_per_row)
-        for col, (name, member_id, linkedin_url) in zip(cols, row_members):
-            # Initials avatar
-            parts    = name.split()
-            initials = (parts[0][0] + parts[-1][0]).upper() if len(parts) > 1 else parts[0][:2].upper()
- 
+
+        for col, (name, member_id, linkedin_url, github_url) in zip(cols, row_members):
+
+            parts = name.split()
+            initials = (parts[0][0] + parts[-1][0]).upper()
+
             col.markdown(f"""
-            <div style="
-                background: #161b2e;
-                border: 1px solid rgba(255,255,255,0.07);
-                border-radius: 14px;
-                padding: 1.6rem 1.4rem 1.3rem;
-                margin-bottom: 1rem;
-                text-align: center;
-                transition: border-color 0.2s;
-            ">
-            <!-- Avatar -->
-            <div style="
-                width: 56px; height: 56px;
-                border-radius: 50%;
-                background: linear-gradient(135deg, #3d5af1, #5b7ff5);
-                display: flex; align-items: center; justify-content: center;
-                margin: 0 auto 0.9rem;
-                font-family: 'DM Serif Display', serif;
-                font-size: 1.3rem;
-                font-weight: 400;
-                color: #ffffff;
-                letter-spacing: 1px;
-            ">{initials}</div>
+            <a href="{linkedin_url}" target="_blank" style="text-decoration:none">
+            <div class="team-card">
 
-            <!-- Name -->
-            <div style="
-                font-size: 0.95rem;
-                font-weight: 600;
-                color: #c8d0e8;
-                margin-bottom: 0.3rem;
-                line-height: 1.3;
-            ">{name}</div>
+            <div class="team-avatar">{initials}</div>
+            <div class="team-name">{name}</div>
+            <div class="team-id">{member_id}</div>
+            <div style="display:flex;justify-content:center;gap:0.5rem">
 
-            <!-- ID badge -->
-            <div style="
-                font-size: 0.7rem;
-                color: #5c6a8a;
-                letter-spacing: 0.5px;
-                margin-bottom: 1rem;
-            ">{member_id}</div>
+            <!-- LinkedIn -->
+            <a href="{linkedin_url}" target="_blank" class="team-link">
+                {LI_SVG} LinkedIn
+            </a>
 
-            <!-- LinkedIn button -->
-            <a href="{linkedin_url}"
-               target="_blank" rel="noopener noreferrer"
-               style="
-                display: inline-flex;
-                align-items: center;
-                gap: 0.35rem;
-                font-size: 0.75rem;
-                font-weight: 600;
-                color: #8aadff;
-                text-decoration: none;
-                background: rgba(91,127,245,0.12);
-                border: 1px solid rgba(91,127,245,0.3);
-                padding: 0.3rem 0.85rem;
-                border-radius: 20px;
-            ">{LI_SVG} LinkedIn</a>
+            <!-- GitHub -->
+            <a href="{github_url}" target="_blank" class="team-link">
+                {GH_SVG} GitHub
+            </a>
+
             </div>
-            """, unsafe_allow_html=True)
+
+            </div>
+            </a>
+        """, unsafe_allow_html=True)
  
-    # ── Project banner at bottom of team tab ─────────────────────────────────
+    #Project banner at bottom of team tab 
     st.markdown("<br>", unsafe_allow_html=True)
     st.markdown("""
     <div style="
