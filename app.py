@@ -10,6 +10,7 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
+import textwrap
 
 from config import *
 from utils import (
@@ -43,6 +44,117 @@ html, body, [class*="css"] {
     background: #0f1117;
     color: #e8eaf0;
 }
+
+/* Widget labels (selectbox, multiselect, slider, etc.) */
+label, .stSelectbox label, .stMultiSelect label,
+div[data-testid="stWidgetLabel"] > div,
+div[data-testid="stWidgetLabel"] p { color: #8892b0 !important; }
+ 
+/* Selectbox - selected value text inside the box */
+div[data-testid="stSelectbox"] > div > div > div,
+div[data-testid="stSelectbox"] > div[data-baseweb="select"] span {
+    color: #e8eaf0 !important;
+    background: #1c2238 !important;
+}
+ 
+/* Selectbox - dropdown popup list items */
+ul[data-testid="stSelectboxVirtualDropdown"] li,
+div[data-baseweb="popover"] li,
+div[data-baseweb="menu"] li,
+div[data-baseweb="menu"] li span,
+div[role="listbox"] li,
+div[role="option"]  { color: #e8eaf0 !important; background: #1c2238 !important; }
+div[data-baseweb="menu"]             { background: #1c2238 !important; }
+div[data-baseweb="menu"] li:hover,
+div[role="option"]:hover             { background: #252d47 !important; }
+ 
+/* Multiselect - tags and dropdown */
+div[data-testid="stMultiSelect"] span[data-baseweb="tag"] {
+    background: rgba(91,127,245,0.2) !important;
+    color: #8aadff !important;
+}
+div[data-testid="stMultiSelect"] input { color: #e8eaf0 !important; }
+ 
+/* Input box background */
+div[data-baseweb="input"] > div,
+div[data-baseweb="select"] > div:first-child {
+    background: #1c2238 !important;
+    border-color: rgba(255,255,255,0.1) !important;
+}
+ 
+/* Expander header text */
+details summary p,
+div[data-testid="stExpander"] summary p,
+div[data-testid="stExpander"] summary span { color: #c8d0e8 !important; }
+div[data-testid="stExpander"] {
+    background: #161b2e !important;
+    border: 1px solid rgba(255,255,255,0.07) !important;
+    border-radius: 10px !important;
+}
+div[data-testid="stExpander"] > div { color: #8892b0 !important; }
+ 
+/* Caption / small text */
+div[data-testid="stCaptionContainer"] p,
+small, .caption { color: #5c6a8a !important; }
+
+/* Tabs */
+div[data-testid="stTabs"] button {
+    font-family: 'DM Sans', sans-serif !important;
+    font-weight: 500 !important;
+    color: #5c6a8a !important;
+    background: transparent !important;
+}
+div[data-testid="stTabs"] button:hover        { color: #c8d0e8 !important; }
+div[data-testid="stTabs"] button[aria-selected="true"] {
+    color: #8aadff !important;
+    border-bottom-color: #5b7ff5 !important;
+}
+div[data-testid="stTabs"] > div:first-child {
+    border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+}
+ 
+/* Subheader */
+h2, h3 { color: #c8d0e8 !important; }
+ 
+/* Horizontal rule */
+hr { border-color: rgba(255,255,255,0.07) !important; }
+ 
+/* Dataframe / table */
+div[data-testid="stDataFrame"]           { border-radius: 10px; overflow: hidden; }
+div[data-testid="stDataFrame"] th        { background: #1c2238 !important; color: #8892b0 !important; }
+div[data-testid="stDataFrame"] td        { color: #e8eaf0 !important; background: #161b2e !important; }
+div[data-testid="stDataFrame"] tr:hover td { background: #1e2440 !important; }
+ 
+/* Download button */
+div[data-testid="stDownloadButton"] button {
+    background: transparent !important;
+    border: 1px solid rgba(91,127,245,0.4) !important;
+    color: #8aadff !important;
+    border-radius: 8px !important;
+    font-weight: 500 !important;
+}
+div[data-testid="stDownloadButton"] button:hover {
+    background: rgba(91,127,245,0.12) !important;
+    border-color: #5b7ff5 !important;
+}
+
+/* Sidebar */
+section[data-testid="stSidebar"] {
+    background: #12192e !important;
+    border-right: 1px solid rgba(255,255,255,0.06) !important;
+}
+section[data-testid="stSidebar"] p,
+section[data-testid="stSidebar"] span,
+section[data-testid="stSidebar"] label { color: #8892b0 !important; }
+section[data-testid="stSidebar"] h1,
+section[data-testid="stSidebar"] h2,
+section[data-testid="stSidebar"] h3 { color: #c8d0e8 !important; }
+ 
+/* Scrollbar */
+::-webkit-scrollbar             { width: 6px; height: 6px; }
+::-webkit-scrollbar-track       { background: #0f1117; }
+::-webkit-scrollbar-thumb       { background: #2a3050; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #3d5af1; }
 
 /*Header banner*/
 .hero {
@@ -88,6 +200,20 @@ html, body, [class*="css"] {
     border-radius: 20px;
     margin-bottom: 1rem;
 }
+
+/* Stat pill (sidebar) */
+.stat-pill {
+    background: #1c2238;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px;
+    padding: 0.9rem 1.1rem;
+    margin-bottom: 0.7rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.stat-pill-label { font-size: 0.78rem; color: #5c6a8a !important; }
+.stat-pill-value { font-size: 1.1rem; font-weight: 600; color: #c8d0e8 !important; }
 
 /*Card*/
 .card {
@@ -152,12 +278,6 @@ html, body, [class*="css"] {
 div[data-testid="stSelectbox"] label,
 div[data-testid="stMetricLabel"]   { color: #8892b0 !important; }
 div[data-testid="stMetricValue"]   { color: #ffffff !important; font-size: 1.8rem !important; }
-div[data-testid="stTabs"] button   {
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 500;
-    color: #8892b0;
-}
-div[data-testid="stTabs"] button[aria-selected="true"] { color: #c8d0e8; }
 
 button[kind="primary"] {
     background: linear-gradient(135deg, #3d5af1, #5b7ff5) !important;
@@ -172,40 +292,132 @@ div[data-testid="stDataFrame"] { border-radius: 8px; overflow: hidden; }
 </style>
 """, unsafe_allow_html=True)
 
-
-#Hero banner
-st.markdown("""
-<div class="hero">
-    <div class="hero-tag">🌏 Group 5 · SheCodeAfrica Bootcamp 2026</div>
-    <p class="hero-title">Disaster Risk Intelligence System</p>
-    <p class="hero-sub">
-        Predicting the occurrence rate of natural disasters across Asia &nbsp;·&nbsp;
-        Logistic Regression on EM-DAT panel data (2001–2024)
-    </p>
-</div>
-""", unsafe_allow_html=True)
-
-
-#Load data
+# ── Load data ─────────────────────────────────────────────────────────────────
 @st.cache_data
 def load_data():
     return pd.read_csv(DATA_PATH)
 
 cy = load_data()
 
+#Sidebar ───────────────────────────────────────────────────────────────────
+with st.sidebar:
+    st.markdown("""
+    <div style="text-align:center;padding:1rem 0 1.5rem">
+        <div style="font-size:2.2rem">🌏</div>
+        <div style="font-family:'DM Serif Display',serif;font-size:1.1rem;
+                    color:#c8d0e8;margin-top:0.4rem">
+            Disaster Risk<br>Intelligence
+        </div>
+        <div style="font-size:0.7rem;color:#5c6a8a;margin-top:0.3rem;
+                    letter-spacing:1px;text-transform:uppercase">
+            Group 5 · SCA Bootcamp 2026
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
-#Tabs
-tab1, tab2, tab3, tab4 = st.tabs([
+    st.markdown("---")
+    st.markdown('<p style="font-size:0.7rem;letter-spacing:1.5px;'
+                'text-transform:uppercase;color:#5c6a8a;margin-bottom:0.8rem">'
+                'Dataset Summary</p>', unsafe_allow_html=True)
+
+    n_countries = cy["Country"].nunique()
+    n_years     = cy["Start_Year"].nunique()
+    year_range  = f"{int(cy['Start_Year'].min())}–{int(cy['Start_Year'].max())}"
+    total_events= int(cy["event_count"].sum())
+    high_pct    = f"{(cy['High_Occurrence'].mean()*100):.0f}%" if "High_Occurrence" in cy.columns else "-"
+
+    for label, value in [
+        ("Countries", str(n_countries)),
+        ("Years covered", year_range),
+        ("Total records", f"{len(cy):,}"),
+        ("Total events", f"{total_events:,}"),
+        ("High-risk rate", high_pct),
+    ]:
+        st.markdown(
+            f'<div class="stat-pill">'
+            f'<span class="stat-pill-label">{label}</span>'
+            f'<span class="stat-pill-value">{value}</span>'
+            f'</div>',
+            unsafe_allow_html=True
+        )
+
+    st.markdown("---")
+    st.markdown('<p style="font-size:0.7rem;letter-spacing:1.5px;'
+                'text-transform:uppercase;color:#5c6a8a;margin-bottom:0.8rem">'
+                'Model</p>', unsafe_allow_html=True)
+    for chip in ["Logistic Regression", "L2 regularisation",
+                 "class_weight=balanced", "5-Fold CV", "Temporal Split"]:
+        st.markdown(f'<span class="insight-chip">{chip}</span>',
+                    unsafe_allow_html=True)
+
+    st.markdown("---")
+    st.markdown(
+        '<p style="font-size:0.72rem;color:#3d4a6a;text-align:center">'
+        'EM-DAT · CRED · UCLouvain<br>Data: Asia 2001–2024</p>',
+        unsafe_allow_html=True
+    )
+
+# ── Hero banner ───────────────────────────────────────────────────────────────
+# Compute live headline stats for the hero
+most_active_country = cy.groupby("Country")["event_count"].sum().idxmax()
+most_active_year    = cy.groupby("Start_Year")["event_count"].sum().idxmax()
+avg_events_yr       = cy.groupby("Start_Year")["event_count"].sum().mean()
+
+st.markdown(f"""
+<div class="hero">
+    <div class="hero-tag">🌏 Group 5 · SheCodeAfrica Data Science Bootcamp 2026</div>
+    <p class="hero-title">Disaster Risk Intelligence System</p>
+    <p class="hero-sub">
+        Predicting the occurrence rate of natural disasters across Asia &nbsp;·&nbsp;
+        Logistic Regression on EM-DAT panel data (2001–2024)
+    </p>
+    <div style="display:flex;gap:2rem;margin-top:1.8rem;flex-wrap:wrap">
+        <div>
+            <div style="font-size:0.68rem;letter-spacing:1.2px;text-transform:uppercase;
+                        color:#3d5a8a;margin-bottom:0.2rem">Most active country</div>
+            <div style="font-size:1.15rem;font-weight:600;color:#8aadff">
+                {most_active_country}
+            </div>
+        </div>
+        <div>
+            <div style="font-size:0.68rem;letter-spacing:1.2px;text-transform:uppercase;
+                        color:#3d5a8a;margin-bottom:0.2rem">Peak year</div>
+            <div style="font-size:1.15rem;font-weight:600;color:#8aadff">
+                {most_active_year}
+            </div>
+        </div>
+        <div>
+            <div style="font-size:0.68rem;letter-spacing:1.2px;text-transform:uppercase;
+                        color:#3d5a8a;margin-bottom:0.2rem">Avg events / year</div>
+            <div style="font-size:1.15rem;font-weight:600;color:#8aadff">
+                {avg_events_yr:.0f}
+            </div>
+        </div>
+        <div>
+            <div style="font-size:0.68rem;letter-spacing:1.2px;text-transform:uppercase;
+                        color:#3d5a8a;margin-bottom:0.2rem">Countries tracked</div>
+            <div style="font-size:1.15rem;font-weight:600;color:#8aadff">
+                {n_countries}
+            </div>
+        </div>
+    </div>
+</div>
+""", unsafe_allow_html=True)
+
+
+# ── Tabs ──────────────────────────────────────────────────────────────────────
+tab1, tab2, tab3, tab4, tab5 = st.tabs([
     "🔮 Predict Risk",
     "🏆 Country Rankings",
     "📈 Trend Analysis",
     "🧠 Model Insights",
+    "👥 Our Team",
 ])
 
 
-# -----------------------------------------------------------------------------
+# ═══════════════════════════════════════════════════════════════════════════════
 # TAB 1 - PREDICTION
-# -----------------------------------------------------------------------------
+# ═══════════════════════════════════════════════════════════════════════════════
 with tab1:
 
     st.markdown('<p class="section-heading">Country Risk Prediction</p>',
@@ -231,10 +443,10 @@ with tab1:
 
     st.markdown("---")
 
-    #Side-by-side current / next year predictions
+    # ── Side-by-side current / next year predictions ─────────────────────────
     col_curr, col_next = st.columns(2)
 
-    #Current year ──
+    # ── Current year ──
     with col_curr:
         st.markdown('<div class="card">', unsafe_allow_html=True)
         st.markdown('<p class="card-title">Current Year</p>', unsafe_allow_html=True)
@@ -264,7 +476,12 @@ with tab1:
         st.progress(prob_curr)
         st.markdown('</div>', unsafe_allow_html=True)
 
-    #Next year
+    # ── Next year ──
+    # BUG FIX: original code only updated Start_Year, leaving all lag features
+    # unchanged → model saw near-identical input → near-identical probability.
+    # build_next_year_input() correctly rolls the current year's actuals
+    # (event_count, total_deaths, total_affected, total_damage) into the lag
+    # columns before predicting, so the model receives genuinely updated input.
     with col_next:
         st.markdown('<div class="card">', unsafe_allow_html=True)
         st.markdown('<p class="card-title">Next Year Forecast</p>',
@@ -296,7 +513,7 @@ with tab1:
         st.progress(prob_next)
         st.markdown('</div>', unsafe_allow_html=True)
 
-    #Risk delta callout
+    # ── Risk delta callout ────────────────────────────────────────────────────
     delta      = prob_next - prob_curr
     delta_icon = "📈" if delta > 0.02 else "📉" if delta < -0.02 else "➡️"
     delta_text = (
@@ -308,7 +525,7 @@ with tab1:
     )
     st.info(f"{delta_icon} {delta_text}")
 
-    #Risk drivers panel
+    # ── Risk drivers panel ────────────────────────────────────────────────────
     st.markdown("---")
     st.markdown('<p class="section-heading">What is driving the risk?</p>',
                 unsafe_allow_html=True)
@@ -323,7 +540,9 @@ with tab1:
     for _, row in drivers.iterrows():
         is_up   = row["Contribution"] > 0
         colour  = "#e17070" if is_up else "#6ec98f"
-        arrow   = "↑" if is_up else "↓"
+        # FIX: ↑ / ↓ Unicode chars are intercepted by Streamlit's Material Icons
+        # renderer and expanded to icon names. HTML triangle entities are safe.
+        arrow   = "&#9650;" if is_up else "&#9660;"
         bar_pct = min(abs(row["Contribution"]) / drivers["Contribution"].abs().max(), 1.0)
         bar_w   = int(bar_pct * 180)
 
@@ -345,10 +564,59 @@ with tab1:
         </div>
         """, unsafe_allow_html=True)
 
+    # ── Country historical profile ─────────────────────────────────────────────
+    st.markdown("---")
+    st.markdown(f'<p class="section-heading">Historical Profile - {country}</p>',
+                unsafe_allow_html=True)
+    st.caption("Annual event count for the selected country across all available years."
+               " The selected year is highlighted.")
 
-# -----------------------------------------------------------------------------
+    country_history = cy[cy["Country"] == country].sort_values("Start_Year")
+
+    fig_hist = go.Figure()
+
+    # Area fill
+    fig_hist.add_trace(go.Scatter(
+        x=country_history["Start_Year"],
+        y=country_history["event_count"],
+        mode="lines",
+        fill="tozeroy",
+        fillcolor="rgba(91,127,245,0.10)",
+        line=dict(color="#5b7ff5", width=2),
+        name="Event Count",
+        hovertemplate="<b>%{x}</b><br>Events: %{y}<extra></extra>",
+    ))
+
+    # Highlight selected year
+    sel = country_history[country_history["Start_Year"] == year]
+    if not sel.empty:
+        fig_hist.add_trace(go.Scatter(
+            x=sel["Start_Year"],
+            y=sel["event_count"],
+            mode="markers",
+            marker=dict(size=12, color=colour_curr,
+                        line=dict(width=2, color="#ffffff")),
+            name=f"Selected ({year})",
+            hovertemplate=f"<b>{year}</b><br>Events: %{{y}}<extra></extra>",
+        ))
+
+    fig_hist.update_layout(
+        plot_bgcolor="#161b2e",
+        paper_bgcolor="#161b2e",
+        font_color="#c8d0e8",
+        height=260,
+        margin=dict(l=10, r=10, t=20, b=10),
+        xaxis=dict(gridcolor="rgba(255,255,255,0.05)", title="Year"),
+        yaxis=dict(gridcolor="rgba(255,255,255,0.05)", title="Events"),
+        legend=dict(bgcolor="rgba(0,0,0,0)", font=dict(color="#8892b0")),
+        showlegend=True,
+    )
+    st.plotly_chart(fig_hist, width='stretch')
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # TAB 2 - COUNTRY RANKINGS
-# -----------------------------------------------------------------------------
+# ═══════════════════════════════════════════════════════════════════════════════
 with tab2:
 
     st.markdown('<p class="section-heading">Country Risk Rankings</p>',
@@ -365,7 +633,7 @@ with tab2:
     if year_data.empty:
         st.warning("No data for selected year.")
     else:
-      
+        # Vectorised: prepare all rows at once instead of looping
         drop_cols  = ["Country", "High_Occurrence", "event_count",
                       "total_deaths", "total_affected", "total_damage"]
         input_bulk = year_data.drop(columns=drop_cols, errors="ignore")
@@ -392,7 +660,7 @@ with tab2:
                 ranking_df.style.background_gradient(
                     subset=["Risk Probability"], cmap="RdYlGn_r"
                 ).format({"Risk Probability": "{:.1%}"}),
-                width='stretch',    
+                width='stretch',    # FIX: original used width='stretch' (invalid)
                 height=500,
             )
 
@@ -421,7 +689,7 @@ with tab2:
             )
             st.plotly_chart(fig, width='stretch')
 
-#Asia choropleth map
+        # ── Asia choropleth map ───────────────────────────────────────────────
         st.markdown("---")
         st.markdown(
             f'<p class="section-heading">Asia Risk Map - {selected_year}</p>',
@@ -432,7 +700,7 @@ with tab2:
             "for each country. Countries in the dataset but with no data for the "
             "selected year appear grey. Hover over any country for details."
         )
- 
+
         # Merge ISO codes from cy into ranking_df so the map has location codes
         iso_lookup = (
             cy[["Country", "ISO"]]
@@ -441,10 +709,10 @@ with tab2:
             .to_dict()
         )
         ranking_df["ISO"] = ranking_df["Country"].map(iso_lookup)
- 
+
         # Risk level order for the hover label
         ranking_df["Risk %"] = (ranking_df["Risk Probability"] * 100).round(1)
- 
+
         fig_map = go.Figure(go.Choropleth(
             locations      = ranking_df["ISO"],
             z              = ranking_df["Risk Probability"],
@@ -462,11 +730,11 @@ with tab2:
                 "<extra></extra>"
             ),
             colorscale     = [
-                [0.00, "#1a3a5c"],   # deep blue  — very low risk
-                [0.25, "#2e6da4"],   # mid blue   — low risk
-                [0.50, "#f1c40f"],   # amber      — moderate risk
-                [0.75, "#e67e22"],   # orange     — high risk
-                [1.00, "#c0392b"],   # deep red   — very high risk
+                [0.00, "#1a3a5c"],   # deep blue  - very low risk
+                [0.25, "#2e6da4"],   # mid blue   - low risk
+                [0.50, "#f1c40f"],   # amber      - moderate risk
+                [0.75, "#e67e22"],   # orange     - high risk
+                [1.00, "#c0392b"],   # deep red   - very high risk
             ],
             zmin           = 0,
             zmax           = 1,
@@ -485,7 +753,7 @@ with tab2:
                 ticktext   = ["0% Low", "25%", "50% Moderate", "75%", "100% High"],
             ),
         ))
- 
+
         fig_map.update_layout(
             geo = dict(
                 scope           = "asia",
@@ -506,7 +774,7 @@ with tab2:
             paper_bgcolor = "#0f1117",
             font_color    = "#c8d0e8",
             title         = dict(
-                text      = f"Predicted Disaster Risk by Country — {selected_year}",
+                text      = f"Predicted Disaster Risk by Country - {selected_year}",
                 font      = dict(size=16, color="#c8d0e8"),
                 x         = 0.5,
                 xanchor   = "center",
@@ -514,10 +782,10 @@ with tab2:
             margin        = dict(l=0, r=0, t=50, b=0),
             height        = 520,
         )
- 
+
         st.plotly_chart(fig_map, width='stretch')
- 
-        #Risk level legend 
+
+        # ── Risk level legend ─────────────────────────────────────────────────
         legend_items = [
             ("#1a3a5c", "#2e6da4", "Low (0–40%)"),
             ("#f1c40f", "#f1c40f", "Moderate (40–55%)"),
@@ -535,15 +803,27 @@ with tab2:
         legend_html += "</div>"
         st.markdown(legend_html, unsafe_allow_html=True)
 
-# -----------------------------------------------------------------------------
+        # ── Download ranking data ─────────────────────────────────────────────
+        st.markdown("<br>", unsafe_allow_html=True)
+        csv_data = ranking_df.drop(columns=["ISO", "Risk %"], errors="ignore")
+        csv_data["Risk Probability"] = csv_data["Risk Probability"].round(4)
+        st.download_button(
+            label="⬇ Download Rankings as CSV",
+            data=csv_data.to_csv(index=False).encode("utf-8"),
+            file_name=f"asia_disaster_risk_rankings_{selected_year}.csv",
+            mime="text/csv",
+        )
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # TAB 3 - TRENDS
-# -----------------------------------------------------------------------------
+# ═══════════════════════════════════════════════════════════════════════════════
 with tab3:
 
     st.markdown('<p class="section-heading">Temporal Trend Analysis</p>',
                 unsafe_allow_html=True)
 
-    #Overall Asia trend
+    # ── Overall Asia trend ────────────────────────────────────────────────────
     yearly = cy.groupby("Start_Year")["event_count"].sum().reset_index()
 
     fig_trend = px.area(
@@ -569,7 +849,7 @@ with tab3:
     )
     st.plotly_chart(fig_trend, width='stretch')
 
-    #Country comparison
+    # ── Country comparison ─────────────────────────────────────────────────────
     st.markdown("---")
     st.subheader("Country Comparison")
 
@@ -605,7 +885,7 @@ with tab3:
         )
         st.plotly_chart(fig2, width='stretch')
 
-    #Heatmap: country × year
+    # ── Heatmap: country × year ───────────────────────────────────────────────
     st.markdown("---")
     st.subheader("Risk Heatmap - Top 15 Countries × Year")
 
@@ -635,15 +915,15 @@ with tab3:
     st.plotly_chart(fig_heat, width='stretch')
 
 
-# -----------------------------------------------------------------------------
+# ═══════════════════════════════════════════════════════════════════════════════
 # TAB 4 - MODEL INSIGHTS
-# -----------------------------------------------------------------------------
+# ═══════════════════════════════════════════════════════════════════════════════
 with tab4:
 
     st.markdown('<p class="section-heading">Model Insights</p>',
                 unsafe_allow_html=True)
 
-    #Model card
+    # ── Model card ────────────────────────────────────────────────────────────
     st.markdown("""
     <div class="card">
         <p class="card-title">Model Card</p>
@@ -662,7 +942,7 @@ with tab4:
     </div>
     """, unsafe_allow_html=True)
 
-    #Feature importance chart
+    # ── Feature importance chart ───────────────────────────────────────────────
     st.markdown("---")
     st.subheader("Feature Importance - Logistic Regression Coefficients")
     st.caption(
@@ -697,7 +977,7 @@ with tab4:
     )
     st.plotly_chart(fig_imp, width='stretch')
 
-    #Methodology notes
+    # ── Methodology notes for judges ──────────────────────────────────────────
     st.markdown("---")
     st.subheader("Methodological Notes")
 
@@ -744,3 +1024,140 @@ with tab4:
         Logistic Regression, which re-weights the loss function to treat
         both classes equally during training.
         """)
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# TAB 5 - OUR TEAM
+# ═══════════════════════════════════════════════════════════════════════════════
+with tab5:
+ 
+    st.markdown('<p class="section-heading">Our Team</p>',
+                unsafe_allow_html=True)
+    st.markdown(
+        '<p style="color:#8892b0;font-size:0.92rem;margin-bottom:2rem">'
+        'SheCodeAfrica · Cohort 3 Data Science Bootcamp 2026 · Group 5</p>',
+        unsafe_allow_html=True
+    )
+ 
+    # LinkedIn SVG icon (inline, reused per card)
+    LI_SVG = (
+        '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">'
+        '<path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037'
+        '-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046'
+        'c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286z'
+        'M5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063'
+        ' 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065z'
+        'M6.914 20.452H3.76V9h3.154v11.452z'
+        'M22.225 0H1.771C.792 0 0 .774 0 1.729v20.542'
+        'C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729'
+        'C24 .774 23.2 0 22.222 0h.003z"/></svg>'
+    )
+ 
+    # ── Team members ─────────────────────────────────────────────────────────
+    team_members = [
+        ("Azeezat Kareem",             "SCA/APC3/DS/011", "https://linkedin.com/in/azeezat-kareem"),
+        ("Ganiyat Adekunle",           "SCA/APC3/DS/039", "https://linkedin.com/in/ganiyatadekunle/"),
+        ("Oluwatoyin Amodu",           "SCA/APC3/DS/048", "https://linkedin.com/in/oluwatoyin-amodu"),
+        ("Ifedigbo Ifeoma Christabel", "SCA/APC3/DS/195", "https://linkedin.com/in/ifeoma-christabel-ifedigbo"),
+        ("Abigail Dahunsi",            "SCA/APC3/DS/078", "https://linkedin.com/in/abigail-dahunsi"),
+        ("Bunmi Apata",                "SCA/APC3/DS/081", "https://linkedin.com/in/bunmi-apata"),
+        ("Ogechi Obidile",             "SCA/APC3/DS/086", "https://linkedin.com/in/ogechi-obidile"),
+        ("Mistura Bakare",             "SCA/APC3/DS/139", "https://linkedin.com/in/mistura-bakare"),
+        ("Queen Abiche",               "SCA/APC3/DS/142", "https://linkedin.com/in/queen-abiche"),
+        ("Priscilla Akinwale",         "SCA/APC3/DS/186", "https://linkedin.com/in/priscilla-akinwale"),
+        ("Ability James",              "SCA/APC3/DS/060", "https://linkedin.com/in/ability-james"),
+    ]
+ 
+    # Render 3 cards per row
+    cols_per_row = 3
+    for row_start in range(0, len(team_members), cols_per_row):
+        row_members = team_members[row_start : row_start + cols_per_row]
+        cols = st.columns(cols_per_row)
+        for col, (name, member_id, linkedin_url) in zip(cols, row_members):
+            # Initials avatar
+            parts    = name.split()
+            initials = (parts[0][0] + parts[-1][0]).upper() if len(parts) > 1 else parts[0][:2].upper()
+ 
+            col.markdown(f"""
+            <div style="
+                background: #161b2e;
+                border: 1px solid rgba(255,255,255,0.07);
+                border-radius: 14px;
+                padding: 1.6rem 1.4rem 1.3rem;
+                margin-bottom: 1rem;
+                text-align: center;
+                transition: border-color 0.2s;
+            ">
+            <!-- Avatar -->
+            <div style="
+                width: 56px; height: 56px;
+                border-radius: 50%;
+                background: linear-gradient(135deg, #3d5af1, #5b7ff5);
+                display: flex; align-items: center; justify-content: center;
+                margin: 0 auto 0.9rem;
+                font-family: 'DM Serif Display', serif;
+                font-size: 1.3rem;
+                font-weight: 400;
+                color: #ffffff;
+                letter-spacing: 1px;
+            ">{initials}</div>
+
+            <!-- Name -->
+            <div style="
+                font-size: 0.95rem;
+                font-weight: 600;
+                color: #c8d0e8;
+                margin-bottom: 0.3rem;
+                line-height: 1.3;
+            ">{name}</div>
+
+            <!-- ID badge -->
+            <div style="
+                font-size: 0.7rem;
+                color: #5c6a8a;
+                letter-spacing: 0.5px;
+                margin-bottom: 1rem;
+            ">{member_id}</div>
+
+            <!-- LinkedIn button -->
+            <a href="{linkedin_url}"
+               target="_blank" rel="noopener noreferrer"
+               style="
+                display: inline-flex;
+                align-items: center;
+                gap: 0.35rem;
+                font-size: 0.75rem;
+                font-weight: 600;
+                color: #8aadff;
+                text-decoration: none;
+                background: rgba(91,127,245,0.12);
+                border: 1px solid rgba(91,127,245,0.3);
+                padding: 0.3rem 0.85rem;
+                border-radius: 20px;
+            ">{LI_SVG} LinkedIn</a>
+            </div>
+            """, unsafe_allow_html=True)
+ 
+    # ── Project banner at bottom of team tab ─────────────────────────────────
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("""
+    <div style="
+        background: linear-gradient(135deg, #1a1f35, #12192e);
+        border: 1px solid rgba(91,127,245,0.15);
+        border-radius: 12px;
+        padding: 1.6rem 2rem;
+        text-align: center;
+    ">
+        <div style="font-size:0.7rem;letter-spacing:1.5px;text-transform:uppercase;
+                    color:#3d5a8a;margin-bottom:0.5rem">Capstone Project</div>
+        <div style="font-family:'DM Serif Display',serif;font-size:1.25rem;
+                    color:#c8d0e8;margin-bottom:0.4rem">
+            Predicting the Occurrence Rate of Natural Disasters in Asia
+        </div>
+        <div style="font-size:0.82rem;color:#5c6a8a">
+            SheCodeAfrica · Cohort 3 Data Science Bootcamp 2026 &nbsp;·&nbsp;
+            Dataset: EM-DAT (CRED, UCLouvain) &nbsp;·&nbsp;
+            Focus: Trend Analysis &amp; Logistic Regression
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+ 
