@@ -46,6 +46,38 @@ html, body, [class*="css"] {
     color: #e8eaf0;
 }
 
+/*Header*/
+[data-testid="stHeader"],
+[data-testid="stToolbar"],
+header[data-testid="stHeader"] {
+    background: #0f1117 !important;
+    border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+}
+
+/* Header text, buttons and icons */
+[data-testid="stHeader"] button,
+[data-testid="stHeader"] a,
+[data-testid="stHeader"] span,
+[data-testid="stHeader"] p,
+[data-testid="stToolbar"] button,
+[data-testid="stToolbar"] span,
+[data-testid="stDecoration"] {
+    color: #c8d0e8 !important;
+    fill: #c8d0e8 !important;
+}
+
+/* Deploy button specifically */
+[data-testid="stAppDeployButton"] button,
+[data-testid="stAppDeployButton"] span {
+    color: #c8d0e8 !important;
+    border-color: rgba(255,255,255,0.2) !important;
+}
+
+/* Sidebar collapse toggle arrow */
+[data-testid="stSidebarCollapsedControl"] button {
+    color: #c8d0e8 !important;
+}
+
 /* Widget labels (selectbox, multiselect, slider, etc.) */
 label, .stSelectbox label, .stMultiSelect label,
 div[data-testid="stWidgetLabel"] > div,
@@ -177,11 +209,11 @@ section[data-testid="stSidebar"] h3 { color: #c8d0e8 !important; }
 }
 .hero-title {
     font-family: 'DM Serif Display', serif;
-    font-size: 2.4rem;
-    font-weight: 400;
+    font-size: 3.2rem;
+    font-weight: 600;
     color: #ffffff;
     margin: 0 0 0.4rem 0;
-    letter-spacing: -0.5px;
+    letter-spacing: 0.2rem;
 }
 .hero-sub {
     font-size: 0.95rem;
@@ -526,70 +558,75 @@ with tab1:
 
     st.markdown("---")
 
-    #Side-by-side current / next year predictions 
+    #Side-by-side current / next year predictions
     col_curr, col_next = st.columns(2)
 
-    #Current year 
+    input_df = selected_row.drop(
+        columns=["Country", "High_Occurrence", "event_count",
+                 "total_deaths", "total_affected", "total_damage"],
+        errors="ignore"
+    )
+    pred_curr, prob_curr = predict_risk(input_df)
+    label_curr, colour_curr = risk_label(prob_curr)
+
+    next_row   = build_next_year_input(selected_row)
+    next_input = next_row.drop(
+        columns=["Country", "High_Occurrence", "event_count",
+                 "total_deaths", "total_affected", "total_damage"],
+        errors="ignore"
+    )
+    pred_next, prob_next = predict_risk(next_input)
+    label_next, colour_next = risk_label(prob_next)
+
+    def _badge(pred, label, colour):
+        icon = "⚠" if pred else "✔"
+        bg   = "rgba(231,76,60,0.15)" if pred else "rgba(46,204,113,0.12)"
+        return (
+            f'<div style="display:inline-flex;align-items:center;gap:0.5rem;'
+            f'padding:0.6rem 1.4rem;border-radius:50px;font-weight:600;'
+            f'font-size:1.05rem;margin-top:0.3rem;background:{bg};'
+            f'border:1px solid {colour};color:{colour}">'
+            f'{icon} {label} Risk</div>'
+        )
+
+    def _progress(prob, colour):
+        pct = int(prob * 100)
+        return (
+            f'<div style="height:8px;border-radius:99px;'
+            f'background:rgba(255,255,255,0.07);margin-top:1rem">'
+            f'<div style="height:8px;border-radius:99px;width:{pct}%;'
+            f'background:{colour}"></div></div>'
+        )
+
     with col_curr:
-        st.markdown('<div class="card">', unsafe_allow_html=True)
-        st.markdown('<p class="card-title">Current Year</p>', unsafe_allow_html=True)
-
-        input_df = selected_row.drop(
-            columns=["Country", "High_Occurrence", "event_count",
-                     "total_deaths", "total_affected", "total_damage"],
-            errors="ignore"
-        )
-        pred_curr, prob_curr = predict_risk(input_df)
-        label_curr, colour_curr = risk_label(prob_curr)
-
         st.markdown(
-            f'<p class="prob-number" style="color:{colour_curr}">'
-            f'{prob_curr:.1%}</p>',
-            unsafe_allow_html=True
-        )
-        st.markdown(
-            f'<div class="risk-badge" style="'
-            f'background:{"rgba(231,76,60,0.15)" if pred_curr else "rgba(46,204,113,0.12)"}; '
-            f'border:1px solid {colour_curr}; color:{colour_curr}">'
-            f'{"⚠ " + label_curr + " Risk" if pred_curr else "✔ " + label_curr + " Risk"}'
+            f'<div style="background:#161b2e;border:1px solid rgba(255,255,255,0.07);'
+            f'border-radius:12px;padding:1.5rem 1.8rem;margin-bottom:1.2rem">'
+            f'<p style="font-size:0.72rem;font-weight:600;letter-spacing:1.5px;'
+            f'text-transform:uppercase;color:#5c6a8a;margin-bottom:0.8rem">Current Year</p>'
+            f'<p style="font-family:\'DM Serif Display\',serif;font-size:3.2rem;'
+            f'font-weight:400;line-height:1;margin:0;color:{colour_curr}">{prob_curr:.1%}</p>'
+            f'{_badge(pred_curr, label_curr, colour_curr)}'
+            f'<p style="margin-top:0.8rem;font-weight:600;color:#c8d0e8">{country} — {year}</p>'
+            f'{_progress(prob_curr, colour_curr)}'
             f'</div>',
             unsafe_allow_html=True
         )
-        st.markdown(f"**{country} - {year}**", )
-        st.progress(prob_curr)
-        st.markdown('</div>', unsafe_allow_html=True)
 
-    #Next year 
     with col_next:
-        st.markdown('<div class="card">', unsafe_allow_html=True)
-        st.markdown('<p class="card-title">Next Year Forecast</p>',
-                    unsafe_allow_html=True)
-
-        next_row    = build_next_year_input(selected_row)
-        next_input  = next_row.drop(
-            columns=["Country", "High_Occurrence", "event_count",
-                     "total_deaths", "total_affected", "total_damage"],
-            errors="ignore"
-        )
-        pred_next, prob_next = predict_risk(next_input)
-        label_next, colour_next = risk_label(prob_next)
-
         st.markdown(
-            f'<p class="prob-number" style="color:{colour_next}">'
-            f'{prob_next:.1%}</p>',
-            unsafe_allow_html=True
-        )
-        st.markdown(
-            f'<div class="risk-badge" style="'
-            f'background:{"rgba(231,76,60,0.15)" if pred_next else "rgba(46,204,113,0.12)"}; '
-            f'border:1px solid {colour_next}; color:{colour_next}">'
-            f'{"⚠ " + label_next + " Risk" if pred_next else "✔ " + label_next + " Risk"}'
+            f'<div style="background:#161b2e;border:1px solid rgba(255,255,255,0.07);'
+            f'border-radius:12px;padding:1.5rem 1.8rem;margin-bottom:1.2rem">'
+            f'<p style="font-size:0.72rem;font-weight:600;letter-spacing:1.5px;'
+            f'text-transform:uppercase;color:#5c6a8a;margin-bottom:0.8rem">Next Year Forecast</p>'
+            f'<p style="font-family:\'DM Serif Display\',serif;font-size:3.2rem;'
+            f'font-weight:400;line-height:1;margin:0;color:{colour_next}">{prob_next:.1%}</p>'
+            f'{_badge(pred_next, label_next, colour_next)}'
+            f'<p style="margin-top:0.8rem;font-weight:600;color:#c8d0e8">{country} — {year + 1} (projected)</p>'
+            f'{_progress(prob_next, colour_next)}'
             f'</div>',
             unsafe_allow_html=True
         )
-        st.markdown(f"**{country} - {year + 1} (projected)**")
-        st.progress(prob_next)
-        st.markdown('</div>', unsafe_allow_html=True)
 
     #Risk delta callout 
     delta      = prob_next - prob_curr
@@ -688,7 +725,6 @@ with tab1:
         showlegend=True,
     )
     st.plotly_chart(fig_hist, width='stretch')
-
 
 # ---------------------------------------------------
 # TAB 2 - COUNTRY RANKINGS
@@ -1158,13 +1194,13 @@ with tab5:
         ("Azeezat Kareem",             "SCA/APC3/DS/011", "https://linkedin.com/in/azeezat-kareem", "https://github.com/Abbiefied/disaster-risk-app"),
         ("Ganiyat Adekunle",           "SCA/APC3/DS/039", "https://linkedin.com/in/ganiyatadekunle/", "https://github.com/Abbiefied/"),
         ("Oluwatoyin Amodu",           "SCA/APC3/DS/048", "https://linkedin.com/in/oluwatoyin-amodu", "https://github.com/Abbiefied/disaster-risk-app"),
-        ("Ifedigbo Ifeoma Christabel", "SCA/APC3/DS/195", "https://linkedin.com/in/ifeoma-christabel-ifedigbo", "https://github.com/Abbiefied/disaster-risk-app"),
+        ("Ifedigbo Ifeoma Christabel", "SCA/APC3/DS/195", "https://linkedin.com/in/ifedigbo-ifeoma-a52988264", "https://github.com/Abbiefied/disaster-risk-app"),
         ("Abigail Dahunsi",            "SCA/APC3/DS/078", "https://linkedin.com/in/abigail-dahunsi", "https://github.com/Abbiefied/disaster-risk-app"),
         ("Bunmi Apata",                "SCA/APC3/DS/081", "https://linkedin.com/in/bunmi-apata", "https://github.com/Abbiefied/disaster-risk-app"),
         ("Ogechi Obidile",             "SCA/APC3/DS/086", "https://linkedin.com/in/ogechi-obidile", "https://github.com/Abbiefied/disaster-risk-app"),
         ("Mistura Bakare",             "SCA/APC3/DS/139", "https://linkedin.com/in/mistura-bakare", "https://github.com/Abbiefied/disaster-risk-app"),
         ("Queen Abiche",               "SCA/APC3/DS/142", "https://linkedin.com/in/queen-abiche", "https://github.com/Abbiefied/disaster-risk-app"),
-        ("Priscilla Akinwale",         "SCA/APC3/DS/186", "https://linkedin.com/in/priscilla-akinwale", "https://github.com/Abbiefied/disaster-risk-app"),
+        ("Priscilla Akinwale",         "SCA/APC3/DS/186", "https://linkedin.com/in/priscilla-akinwale", "https://github.com/AkinwalePriscilla"),
         ("Ability James",              "SCA/APC3/DS/060", "https://linkedin.com/in/ability-james", "https://github.com/Abbiefied/disaster-risk-app"),
     ]
  
