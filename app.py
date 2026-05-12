@@ -1198,7 +1198,7 @@ with tab5:
         ("Ifedigbo Ifeoma Christabel", "SCA/APC3/DS/195", "https://linkedin.com/in/ifedigbo-ifeoma-a52988264", "https://github.com/ifeomachristabel356-data"),
         ("Abigail Dahunsi",            "SCA/APC3/DS/078", "https://linkedin.com/in/abigail-dahunsi", "https://github.com/Abbyqueen45"),
         ("Bunmi Apata",                "SCA/APC3/DS/081", "https://linkedin.com/in/bumirocks", "https://github.com/bumirocks"),
-        ("Ogechi Obidile",             "SCA/APC3/DS/086", "https://linkedin.com/in/ogechi-vanessa-obidile-38a4433a2", "https://github.com/Oge8"),
+        ("Ogechi Obidile",             "SCA/APC3/DS/086", "https://linkedin.com/in/ogechi-vanessa-obidile-38a4433a2", "https://github.com/Oge457"),
         ("Mistura Bakare",             "SCA/APC3/DS/139", "https://linkedin.com/in/misturamopelolabakare", "https://github.com/Abbiefied/disaster-risk-app"),
         ("Queen Abiche",               "SCA/APC3/DS/142", "https://linkedin.com/in/queen-abiche-59356b213", "https://github.com/QUEENOCHANYAABICHE"),
         ("Priscilla Akinwale",         "SCA/APC3/DS/186", "https://linkedin.com/in/priscilla-akinwale", "https://github.com/AkinwalePriscilla"),
