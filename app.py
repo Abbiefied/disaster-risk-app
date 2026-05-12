@@ -1194,15 +1194,15 @@ with tab5:
     team_members = [
         ("Azeezat Kareem",             "SCA/APC3/DS/011", "https://linkedin.com/in/azeezat-kareem-824697371/", "https://github.com//aazeezat915-gif"),
         ("Ganiyat Adekunle",           "SCA/APC3/DS/039", "https://linkedin.com/in/ganiyatadekunle/", "https://github.com/Abbiefied/"),
-        ("Oluwatoyin Amodu",           "SCA/APC3/DS/048", "https://linkedin.com/in/oluwatoyin-amodu", "https://github.com/Abbiefied/disaster-risk-app"),
-        ("Ifedigbo Ifeoma Christabel", "SCA/APC3/DS/195", "https://linkedin.com/in/ifedigbo-ifeoma-a52988264", "https://github.com/Abbiefied/disaster-risk-app"),
-        ("Abigail Dahunsi",            "SCA/APC3/DS/078", "https://linkedin.com/in/abigail-dahunsi", "https://github.com/Abbiefied/disaster-risk-app"),
-        ("Bunmi Apata",                "SCA/APC3/DS/081", "https://linkedin.com/in/bunmi-apata", "https://github.com/Abbiefied/disaster-risk-app"),
-        ("Ogechi Obidile",             "SCA/APC3/DS/086", "https://linkedin.com/in/ogechi-obidile", "https://github.com/Abbiefied/disaster-risk-app"),
-        ("Mistura Bakare",             "SCA/APC3/DS/139", "https://linkedin.com/in/mistura-bakare", "https://github.com/Abbiefied/disaster-risk-app"),
-        ("Queen Abiche",               "SCA/APC3/DS/142", "https://linkedin.com/in/queen-abiche", "https://github.com/Abbiefied/disaster-risk-app"),
+        ("Oluwatoyin Amodu",           "SCA/APC3/DS/048", "https://www.linkedin.com/in/oluwatoyin-amodu-91aaba337", "https://github.com/Amoduoluwatoyin"),
+        ("Ifedigbo Ifeoma Christabel", "SCA/APC3/DS/195", "https://linkedin.com/in/ifedigbo-ifeoma-a52988264", "https://github.com/ifeomachristabel356-data"),
+        ("Abigail Dahunsi",            "SCA/APC3/DS/078", "https://linkedin.com/in/abigail-dahunsi", "https://github.com/Abbyqueen45"),
+        ("Bunmi Apata",                "SCA/APC3/DS/081", "https://www.linkedin.com/in/bumirocks", "https://github.com/bumirocks"),
+        ("Ogechi Obidile",             "SCA/APC3/DS/086", "https://linkedin.com/in/ogechi-obidile", "https://github.com/chiemezie1/ogechi-obidile"),
+        ("Mistura Bakare",             "SCA/APC3/DS/139", "https://www.linkedin.com/in/misturamopelolabakare", "https://github.com/Abbiefied/disaster-risk-app"),
+        ("Queen Abiche",               "SCA/APC3/DS/142", "https://linkedin.com/in/queen-abiche-59356b213", "https://github.com/QUEENOCHANYAABICHE"),
         ("Priscilla Akinwale",         "SCA/APC3/DS/186", "https://linkedin.com/in/priscilla-akinwale", "https://github.com/AkinwalePriscilla"),
-        ("Ability James",              "SCA/APC3/DS/060", "https://linkedin.com/in/ability-james", "https://github.com/Abbiefied/disaster-risk-app"),
+        ("Ability James",              "SCA/APC3/DS/060", "https://www.linkedin.com/in/ability-james-632885325", "https://github.com/abilitycjames"),
     ]
  
     # Render 3 cards per row
